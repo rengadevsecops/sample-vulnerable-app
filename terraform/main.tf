@@ -21,9 +21,6 @@ resource "aws_iam_policy" "app_policy" {
   name        = "app-full-access"
   description = "Policy used by instances"
 
-  # FIX: Replaced wildcard "*:*" permissions with least-privilege access
-  # Following AWS best practices, specify only required actions and resources
-  # Reference: CWE-285 - Improper Authorization
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -33,11 +30,15 @@ resource "aws_iam_policy" "app_policy" {
       "Action": [
         "s3:GetObject",
         "s3:PutObject",
-        "s3:ListBucket"
+        "s3:ListBucket",
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes"
       ],
       "Resource": [
         "arn:aws:s3:::sample-app-terraform-bucket-12345",
-        "arn:aws:s3:::sample-app-terraform-bucket-12345/*"
+        "arn:aws:s3:::sample-app-terraform-bucket-12345/*",
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
       ]
     }
   ]
